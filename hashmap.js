@@ -3,44 +3,32 @@ class HashMap{
     constructor(){}
 
     buckets=16
-     hash(key,buckets) {
+    bucketcount(){
+      let bucketcount=0
+      
+      for(let i=0;i<this.buckets;i++){
+        if(this[i]!=null){
+          bucketcount++
+        }
+      }return bucketcount
+    }
+     hash(key) {
 
         let hashCode = 0;
            
         const primeNumber = 31;
         for (let i = 0; i < key.length; i++) {
           hashCode = primeNumber * hashCode + key.charCodeAt(i);
-            hashCode=hashCode%buckets
+            hashCode=hashCode%this.buckets
         }
      
         return hashCode;
       } 
-    set(key,value){
-      let hashnumber=this.hash(key,this.buckets)
-      function checking (me,similar){
-        if(me.key!=similar && me.next==null){
-            me.next={
-                'key':similar,
-                'value':value
-            }
-          }else if(me.next!=null){
-          checking(me.next,similar)
-        }
-      }
     
-    
-      if(this[hashnumber]==null){
-      this[hashnumber]={'key':key,
-    'value':value}}
-    else if(this[hashnumber].key==key){
-        this[hashnumber].value=value
-    }else 
-    return checking(this[hashnumber],key)
-  }
 
     get(key){
      
-        let hashnumber=this.hash(key,this.buckets)
+        let hashnumber=this.hash(key)
         if(this[hashnumber]==null){
             console.log('Does not exist')
         }else {
@@ -49,7 +37,7 @@ class HashMap{
     }
     has(key){
       
-        let hashnumber=this.hash(key,this.buckets)
+        let hashnumber=this.hash(key)
         function containing(me,key){
           
           if(me==null){
@@ -76,7 +64,7 @@ class HashMap{
 
 
     remove(key){
-        let hashnumber=this.hash(key,this.buckets)
+        let hashnumber=this.hash(key)
         if(this[hashnumber].key==key){
             this[hashnumber]=this[hashnumber].next
         }else {
@@ -109,7 +97,7 @@ class HashMap{
        
     clear(){
       for(let i=0;i<this.buckets;i++){
-        this[i]={}
+        this[i]=null
       }
     }
     keys(){
@@ -186,7 +174,49 @@ class HashMap{
 
         } return entries
 
-    }    
+    }
+    increasebucket(){
+     
+     let ratio=((this.bucketcount()/this.buckets) *100 )
+    if(ratio>75){
+      let array=this.entries()
+      this.buckets=this.buckets*2
+      this.clear()
+      for(let i=0;i<array.length;i++){
+        this.set(array[i].key,array[i].value)
+      }return this
+    }return this
+    
+    }
+    set(key,value){
+      
+      let hashnumber=this.hash(key)
+      function checking (me,similar){
+        if(me.key!=similar && me.next==null){
+            me.next={
+                'key':similar,
+                'value':value
+                
+            }
+        
+          }else if(me.next!=null){
+          checking(me.next,similar)
+        }
+        
+      }
+    
+    
+      if(this[hashnumber]==null){
+      this[hashnumber]={'key':key,
+    'value':value}
+    this.increasebucket()}
+    else if(this[hashnumber].key==key){
+        this[hashnumber].value=value
+      
+    }else  {
+    return  checking(this[hashnumber],key,this)
+    }
+  }
 
  }
         
@@ -201,3 +231,11 @@ newmap.set('Timon','Pumba')
 newmap.set('pooky','mpakmpak')
 newmap.set('ChrisFranco','commandosniper')
 console.log(newmap.has('ChrisFranco'))
+newmap.set('a','a')
+newmap.set('b','b')
+newmap.set('c','c')
+newmap.set('d','d')
+newmap.set('h','h')
+newmap.set('i','i')
+newmap.set('j','j')
+newmap.set('k','k')
